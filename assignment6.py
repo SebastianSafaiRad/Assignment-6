@@ -10,28 +10,27 @@ class assignment6:
         self.goal_amount = goal_amount
         self.graph = Graph()
 
-
     def findsolution(self, a, b, goal_amount):
         return self.bfSearch(self.buildGraph())
+    
 
     def getEligibleStates(self, a, b, curr_state):
         pass
 
     def buildGraph(self):
-        self.graph.addVertex(self.getContainerContents())
+        curr_node = self.graph.addVertex(self.getContainerContents())
+        done = False
+        while not done:
+            pass
 
 
     def getContainerContents(self):
         return self.container_a.getCurrVolume() + "," + self.container_b.getCurrVolume()
 
-
     def bfSearch(self, graph):
         pass
 
-    def fill():
-        pass
-
-    def pour(a, b):
+    def pour(self, a, b):
         pass
 
 
@@ -43,10 +42,8 @@ class Container:
         self.max_volume = max_volume
 
     def fill(self):
-        pass
+        self.curr_volume = self.max_volume
 
-    def pour(self):
-        pass
 
     def getCurrVolume(self):
         return self.curr_volume
@@ -54,6 +51,10 @@ class Container:
     def getMaxVolume(self):
         return self.max_volume
 
-if __name__ == '__main__':
- pass
 
+if __name__ == '__main__':
+
+    g = Graph()
+    node = g.addVertex("0,0")
+
+    print(node.getId())
