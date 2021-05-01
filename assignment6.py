@@ -18,8 +18,9 @@ class assignment6:
         pass
 
     def buildGraph(self):
-        q = Queue
-        q.enqueue(self.graph.addVertex("0,0"))
+        q = Queue()
+        graphVert = self.graph.addVertex("0,0")
+        q.enqueue(graphVert)
         while not q.isEmpty():
             curr_node = q.dequeue()
             nodeid = curr_node.getId()
@@ -28,27 +29,39 @@ class assignment6:
             self.container_b.setCurrVolume(int(idList[1]))
             if not self.container_a.isFull():
                 self.container_a.fill()
-                newVertex = Vertex(self.container_a.getCurrVolume() + "," + idList[1])
+                newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + idList[1])
                 self.graph.addEdge(curr_node, newVertex)
                 q.enqueue(newVertex)
                 self.container_a.setCurrVolume(idList[0])
             if not self.container_b.isFull():
                 self.container_b.fill()
-                newVertex = Vertex(idList[0] + "," + self.container_b.getCurrVolume())
+                newVertex = Vertex(idList[0] + "," + str(self.container_b.getCurrVolume()))
                 self.graph.addEdge(curr_node, newVertex)
                 q.enqueue(newVertex)
                 self.container_b.setCurrVolume(idList[1])
             if self.canPour(self.container_a, self.container_b):
-
-
-
+                self.pour(self.container_a, self.container_b)
+                newVertex = Vertex(self.container_a.getCurrVolume() + "," + self.container_b.getCurrVolume())
+                self.graph.addEdge(curr_node, newVertex)
+                q.enqueue(newVertex)
+                self.container_a.setCurrVolume(idList[0])
+            if self.canPour(self.container_b, self.container_a):
+                self.pour(self.container_b, self.container_a)
+                newVertex = Vertex(self.container_a.getCurrVolume() + "," + self.container_b.getCurrVolume())
+                self.graph.addEdge(curr_node, newVertex)
+                q.enqueue(newVertex)
 
     def bfSearch(self, graph):
         pass
 
     def pour(self, source, destination):
-        
-
+        maxAmountToPour = destination.max_volume - destination.curr_volume
+        if source.curr_volume <= maxAmountToPour:
+            destination.curr_volume = destination.curr_volume + source.curr_volume
+            source.curr_volume = 0
+        else:
+            source.curr_volume = source.curr_volume - maxAmountToPour
+            destination.curr_volume = destination.curr_volume + maxAmountToPour
 
     def canPour(self, source, destination):
         if source.isEmpty():
@@ -92,7 +105,6 @@ class Container:
 
 
 if __name__ == '__main__':
-    g = Graph()
-    node = g.addVertex("0,0")
-
-    print(node.getId())
+    obj = assignment6(3, 4, 2)
+    obj.buildGraph()
+    print(obj.graph)
