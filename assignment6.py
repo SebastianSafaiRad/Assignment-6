@@ -14,7 +14,8 @@ class assignment6:
 
     def findsolution(self, a, b, goal_amount):
         if goal_amount % math.gcd(a, b) == 0:
-            return self.bfSearch(self.buildGraph())
+            self.buildGraph()
+            return self.bfSearch()
         else:
             print("There is no solution")
 
@@ -23,7 +24,11 @@ class assignment6:
 
     def buildGraph(self):
         q = Queue()
+        visited = []
+        # root = Vertex("0,0")
         graphVert = self.graph.addVertex("0,0")
+        self.graph.addVertex(graphVert)
+        # q.enqueue(root)
         q.enqueue(graphVert)
         while not q.isEmpty():
             curr_node = q.dequeue()
@@ -34,46 +39,56 @@ class assignment6:
             if not self.container_a.isFull():
                 self.container_a.fill()
                 newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + idList[1])
-                self.graph.addEdge(curr_node, newVertex)
-                q.enqueue(newVertex)
-                self.container_a.setCurrVolume(idList[0])
+                if newVertex not in visited:
+                    visited.append(newVertex)
+                    self.graph.addEdge(curr_node, newVertex)
+                    q.enqueue(newVertex)
+                    self.container_a.setCurrVolume(int(idList[0]))
             if not self.container_b.isFull():
                 self.container_b.fill()
                 newVertex = Vertex(idList[0] + "," + str(self.container_b.getCurrVolume()))
-                self.graph.addEdge(curr_node, newVertex)
-                q.enqueue(newVertex)
-                self.container_b.setCurrVolume(idList[1])
+                if newVertex not in visited:
+                    visited.append(newVertex)
+                    self.graph.addEdge(curr_node, newVertex)
+                    q.enqueue(newVertex)
+                    self.container_b.setCurrVolume(int(idList[1]))
             if self.canPour(self.container_a, self.container_b):
                 self.pour(self.container_a, self.container_b)
-                newVertex = Vertex(self.container_a.getCurrVolume() + "," + self.container_b.getCurrVolume())
-                self.graph.addEdge(curr_node, newVertex)
-                q.enqueue(newVertex)
-                self.container_a.setCurrVolume(idList[0])
+                newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume()))
+                # if not self.vertexExists(newVertex):
+                if newVertex not in visited:
+                    visited.append(newVertex)
+                    self.graph.addEdge(curr_node, newVertex)
+                    q.enqueue(newVertex)
+                    self.container_a.setCurrVolume(int(idList[0]))
             if self.canPour(self.container_b, self.container_a):
                 self.pour(self.container_b, self.container_a)
-                newVertex = Vertex(self.container_a.getCurrVolume() + "," + self.container_b.getCurrVolume())
-                self.graph.addEdge(curr_node, newVertex)
-                q.enqueue(newVertex)
+                newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume()))
+                # if not self.vertexExists(newVertex):
+                if newVertex not in visited:
+                    visited.append(newVertex)
+                    self.graph.addEdge(curr_node, newVertex)
+                    q.enqueue(newVertex)
+                    self.container_b.setCurrVolume(int(idList[1]))
 
-            # return q
-
-    def bfSearch(self, graph):
-        visited = []
+    def bfSearch(self):
         queue = Queue()
-        rootVertex = "0,0"
-        self.graph = graph
+        rootVertex = self.graph.getVertex("0,0")
+        queue.enqueue(rootVertex)
 
-        while queue:
-            d = queue.dequeue(0)
-            for neighbor in graph(d):
-                if neighbor not in visited:
-                    visited.append(neighbor)
-                    queue.enqueue(neighbor)
+        while not queue.isEmpty():
+            currentVertex = queue.dequeue()
+            if self.isSolutionVertex(currentVertex):
+                return currentVertex
+            else:
+                childVertices = currentVertex.getConnections()
+                for vertex in childVertices:
+                    queue.enqueue(vertex)
 
-        pass
+        print("Solution not found")
 
     def pour(self, source, destination):
-        maxAmountToPour = destination.max_volume - destination.curr_volume
+        maxAmountToPour = destination.max_volume - int(destination.curr_volume)
         if source.curr_volume <= maxAmountToPour:
             destination.curr_volume = destination.curr_volume + source.curr_volume
             source.curr_volume = 0
@@ -88,6 +103,10 @@ class assignment6:
             return False
         else:
             return True
+
+    def isSolutionVertex(self, currentVertex):
+
+        pass
 
 
 class Container:
@@ -107,7 +126,7 @@ class Container:
         return self.max_volume
 
     def setCurrVolume(self, volume):
-        self.v = volume
+        self.curr_volume = volume
 
     def isFull(self):
         if self.curr_volume == self.max_volume:
@@ -124,7 +143,9 @@ class Container:
 
 if __name__ == '__main__':
     obj = assignment6(3, 4, 2)
-    obj.buildGraph()
+    print(obj.buildGraph())
     # print(obj.graph)
     # print(obj)
-    print(obj.buildGraph())
+    # print(obj.bfSearch())
+    # print(obj.findsolution(3,4,2))
+
