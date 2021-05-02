@@ -1,7 +1,7 @@
 from graph import Graph
 from graph import Vertex
 from queue2050 import Queue
-
+import math
 
 class assignment6:
 
@@ -12,7 +12,10 @@ class assignment6:
         self.graph = Graph()
 
     def findsolution(self, a, b, goal_amount):
-        return self.bfSearch(self.buildGraph())
+        if goal_amount % math.gcd(a,b) == 0:
+            return self.bfSearch(self.buildGraph())
+        else:
+            print("There is no solution")
 
     def getEligibleStates(self, a, b, curr_state):
         pass
@@ -107,4 +110,6 @@ class Container:
 if __name__ == '__main__':
     obj = assignment6(3, 4, 2)
     obj.buildGraph()
-    print(obj.graph)
+    #print(obj.graph)
+    #print(obj)
+    print(obj.buildGraph())
