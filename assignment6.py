@@ -3,6 +3,7 @@ from graph import Vertex
 from queue2050 import Queue
 import math
 
+
 class assignment6:
 
     def __init__(self, a_volume, b_volume, goal_amount):
@@ -12,7 +13,7 @@ class assignment6:
         self.graph = Graph()
 
     def findsolution(self, a, b, goal_amount):
-        if goal_amount % math.gcd(a,b) == 0:
+        if goal_amount % math.gcd(a, b) == 0:
             return self.bfSearch(self.buildGraph())
         else:
             print("There is no solution")
@@ -54,7 +55,21 @@ class assignment6:
                 self.graph.addEdge(curr_node, newVertex)
                 q.enqueue(newVertex)
 
+            # return q
+
     def bfSearch(self, graph):
+        visited = []
+        queue = Queue()
+        rootVertex = "0,0"
+        self.graph = graph
+
+        while queue:
+            d = queue.dequeue(0)
+            for neighbor in graph(d):
+                if neighbor not in visited:
+                    visited.append(neighbor)
+                    queue.enqueue(neighbor)
+
         pass
 
     def pour(self, source, destination):
@@ -110,6 +125,6 @@ class Container:
 if __name__ == '__main__':
     obj = assignment6(3, 4, 2)
     obj.buildGraph()
-    #print(obj.graph)
-    #print(obj)
+    # print(obj.graph)
+    # print(obj)
     print(obj.buildGraph())
