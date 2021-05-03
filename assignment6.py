@@ -11,6 +11,7 @@ class assignment6:
         self.container_b = Container(b_volume)
         self.goal_amount = goal_amount
         self.graph = Graph()
+        self.self.vertexValueDict = {}
 
     def findsolution(self, a, b, goal_amount):
         if goal_amount % math.gcd(a, b) == 0:
@@ -24,14 +25,13 @@ class assignment6:
 
     def buildGraph(self):
         q = Queue()
-        vertexValueDict = {}
         nextVertexId = 0
         self.graph.addVertex(0)
-        vertexValueDict[0] = "0,0"
+        self.vertexValueDict[0] = "0,0"
         q.enqueue(self.graph.getVertex(0))
         while not q.isEmpty():
             currVertex = q.dequeue()
-            currVertexValue = vertexValueDict[currVertex.getId()]
+            currVertexValue = self.vertexValueDict[currVertex.getId()]
             idList = currVertexValue.split(",")
             self.container_a.setCurrVolume(int(idList[0]))
             self.container_b.setCurrVolume(int(idList[1]))
@@ -41,27 +41,27 @@ class assignment6:
             if not self.container_a.isFull():
                 self.container_a.fill()
                 newState = str(self.container_a.getCurrVolume()) + "," + idList[1]
-                if newState not in vertexValueDict.values():
+                if newState not in self.vertexValueDict.values():
                     nextVertexId += 1
-                    vertexValueDict[nextVertexId] = newState
+                    self.vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                 self.container_a.setCurrVolume(int(idList[0]))
             if not self.container_b.isFull():
                 self.container_b.fill()
                 newState = idList[0] + "," + str(self.container_b.getCurrVolume())
-                if newState not in vertexValueDict.values():
+                if newState not in self.vertexValueDict.values():
                     nextVertexId += 1
-                    vertexValueDict[nextVertexId] = newState
+                    self.vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                 self.container_b.setCurrVolume(int(idList[1]))
             if self.canPour(self.container_a, self.container_b):
                 self.pour(self.container_a, self.container_b)
                 newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
-                if newState not in vertexValueDict.values():
+                if newState not in self.vertexValueDict.values():
                     nextVertexId += 1
-                    vertexValueDict[nextVertexId] = newState
+                    self.vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                 self.container_a.setCurrVolume(int(idList[0]))
@@ -69,20 +69,20 @@ class assignment6:
             if self.canPour(self.container_b, self.container_a):
                 self.pour(self.container_b, self.container_a)
                 newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
-                if newState not in vertexValueDict.values():
+                if newState not in self.vertexValueDict.values():
                     nextVertexId += 1
-                    vertexValueDict[nextVertexId] = newState
+                    self.vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId, nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                 self.container_a.setCurrVolume(int(idList[0]))
                 self.container_b.setCurrVolume(int(idList[1]))
 
         print("vertices are: " , self.graph.getVertices())
-        print("Key Value entries: ", vertexValueDict)
+        print("Key Value entries: ", self.vertedValueDict)
 
     def bfSearch(self):
         queue = Queue()
-        rootVertex = self.graph.getVertex("0,0")
+        rootVertex = self.graph.getVertex(0)
         queue.enqueue(rootVertex)
 
         while not queue.isEmpty():
@@ -157,4 +157,5 @@ if __name__ == '__main__':
     # print(obj)
     # print(obj.bfSearch())
     # print(obj.findsolution(3,4,2))
-
+    v6 = obj.graph.getVertex(6)
+    print(v6.getDistance())
