@@ -71,8 +71,9 @@ class assignment6:
                     self.graph.addEdge(currVertex.getId, nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_b.setCurrVolume(int(idList[1]))
-                    
-        print("Done with graph")
+
+        print("vertices are: " , self.graph.getVertices())
+        print("Key Value entries: ", vertexValueDict)
 
     def bfSearch(self):
         queue = Queue()
