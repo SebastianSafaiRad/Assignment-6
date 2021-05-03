@@ -35,6 +35,9 @@ class assignment6:
             idList = currVertexValue.split(",")
             self.container_a.setCurrVolume(int(idList[0]))
             self.container_b.setCurrVolume(int(idList[1]))
+            if currVertexValue == "3,3":
+                print("Current vertext is (3,3)")
+
             if not self.container_a.isFull():
                 self.container_a.fill()
                 newState = str(self.container_a.getCurrVolume()) + "," + idList[1]
@@ -43,7 +46,7 @@ class assignment6:
                     vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
-                    self.container_a.setCurrVolume(int(idList[0]))
+                self.container_a.setCurrVolume(int(idList[0]))
             if not self.container_b.isFull():
                 self.container_b.fill()
                 newState = idList[0] + "," + str(self.container_b.getCurrVolume())
@@ -52,7 +55,7 @@ class assignment6:
                     vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
-                    self.container_b.setCurrVolume(int(idList[1]))
+                self.container_b.setCurrVolume(int(idList[1]))
             if self.canPour(self.container_a, self.container_b):
                 self.pour(self.container_a, self.container_b)
                 newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
@@ -61,7 +64,8 @@ class assignment6:
                     vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
-                    self.container_a.setCurrVolume(int(idList[0]))
+                self.container_a.setCurrVolume(int(idList[0]))
+                self.container_b.setCurrVolume(int(idList[1]))
             if self.canPour(self.container_b, self.container_a):
                 self.pour(self.container_b, self.container_a)
                 newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
@@ -70,7 +74,8 @@ class assignment6:
                     vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId, nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
-                    self.container_b.setCurrVolume(int(idList[1]))
+                self.container_a.setCurrVolume(int(idList[0]))
+                self.container_b.setCurrVolume(int(idList[1]))
 
         print("vertices are: " , self.graph.getVertices())
         print("Key Value entries: ", vertexValueDict)
