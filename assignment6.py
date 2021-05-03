@@ -29,7 +29,7 @@ class assignment6:
         self.graph.addVertex(0)
         vertexValueDict[0] = "0,0"
         q.enqueue(self.graph.getVertex(0))
-        while not q.isEmpty()
+        while not q.isEmpty():
             currVertex = q.dequeue()
             currVertexValue = vertexValueDict[currVertex.getId()]
             idList = currVertexValue.split(",")
@@ -58,6 +58,7 @@ class assignment6:
                 newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
                 if newState not in vertexValueDict.values():
                     nextVertexId += 1
+                    vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId(), nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_a.setCurrVolume(int(idList[0]))
@@ -66,9 +67,12 @@ class assignment6:
                 newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
                 if newState not in vertexValueDict.values():
                     nextVertexId += 1
+                    vertexValueDict[nextVertexId] = newState
                     self.graph.addEdge(currVertex.getId, nextVertexId)
                     q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_b.setCurrVolume(int(idList[1]))
+                    
+        print("Done with graph")
 
     def bfSearch(self):
         queue = Queue()
