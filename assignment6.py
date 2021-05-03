@@ -24,51 +24,50 @@ class assignment6:
 
     def buildGraph(self):
         q = Queue()
-        visited = []
-        # root = Vertex("0,0")
-        graphVert = self.graph.addVertex("0,0")
-        self.graph.addVertex(graphVert)
-        # q.enqueue(root)
-        q.enqueue(graphVert)
-        while not q.isEmpty():
-            curr_node = q.dequeue()
-            nodeid = curr_node.getId()
-            idList = nodeid.split(",")
+        vertexValueDict = {}
+        nextVertexId = 0
+        self.graph.addVertex(0)
+        vertexValueDict[0] = "0,0"
+        q.enqueue(self.graph.getVertex(0))
+        while not q.isEmpty()
+            currVertex = q.dequeue()
+            currVertexValue = vertexValueDict[currVertex.getId()]
+            idList = currVertexValue.split(",")
             self.container_a.setCurrVolume(int(idList[0]))
             self.container_b.setCurrVolume(int(idList[1]))
             if not self.container_a.isFull():
                 self.container_a.fill()
-                newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + idList[1])
-                if newVertex not in visited:
-                    visited.append(newVertex)
-                    self.graph.addEdge(curr_node, newVertex)
-                    q.enqueue(newVertex)
+                newState = str(self.container_a.getCurrVolume()) + "," + idList[1]
+                if newState not in vertexValueDict.values():
+                    nextVertexId += 1
+                    vertexValueDict[nextVertexId] = newState
+                    self.graph.addEdge(currVertex.getId(), nextVertexId)
+                    q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_a.setCurrVolume(int(idList[0]))
             if not self.container_b.isFull():
                 self.container_b.fill()
-                newVertex = Vertex(idList[0] + "," + str(self.container_b.getCurrVolume()))
-                if newVertex not in visited:
-                    visited.append(newVertex)
-                    self.graph.addEdge(curr_node, newVertex)
-                    q.enqueue(newVertex)
+                newState = idList[0] + "," + str(self.container_b.getCurrVolume())
+                if newState not in vertexValueDict.values():
+                    nextVertexId += 1
+                    vertexValueDict[nextVertexId] = newState
+                    self.graph.addEdge(currVertex.getId(), nextVertexId)
+                    q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_b.setCurrVolume(int(idList[1]))
             if self.canPour(self.container_a, self.container_b):
                 self.pour(self.container_a, self.container_b)
-                newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume()))
-                # if not self.vertexExists(newVertex):
-                if newVertex not in visited:
-                    visited.append(newVertex)
-                    self.graph.addEdge(curr_node, newVertex)
-                    q.enqueue(newVertex)
+                newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
+                if newState not in vertexValueDict.values():
+                    nextVertexId += 1
+                    self.graph.addEdge(currVertex.getId(), nextVertexId)
+                    q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_a.setCurrVolume(int(idList[0]))
             if self.canPour(self.container_b, self.container_a):
                 self.pour(self.container_b, self.container_a)
-                newVertex = Vertex(str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume()))
-                # if not self.vertexExists(newVertex):
-                if newVertex not in visited:
-                    visited.append(newVertex)
-                    self.graph.addEdge(curr_node, newVertex)
-                    q.enqueue(newVertex)
+                newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
+                if newState not in vertexValueDict.values():
+                    nextVertexId += 1
+                    self.graph.addEdge(currVertex.getId, nextVertexId)
+                    q.enqueue(self.graph.getVertex(nextVertexId))
                     self.container_b.setCurrVolume(int(idList[1]))
 
     def bfSearch(self):
