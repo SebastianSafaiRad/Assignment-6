@@ -17,7 +17,7 @@ class assignment6:
         self.q = Queue()
 
     def findsolution(self, a, b, goal_amount):
-        """Takes input of amount to ge store in container a and container b and the goal amount.
+        """Takes input of amount to store in container a and container b and the goal amount.
         Then it prints out the solution path"""
         self.container_a = Container(a)
         self.container_b = Container(b)
@@ -42,6 +42,7 @@ class assignment6:
         return stateList
 
     def buildGraph2(self):
+        """Builds the graph"""
         self.q.enqueue(self.establishRootVertex())
         while self.q.size() > 0:
             parentVertex = self.q.dequeue()
@@ -68,23 +69,26 @@ class assignment6:
                 self.addToQueue(self.addEdge(parentStateString, self.getStateString()))
                 self.resetContainers(parentStateString)
 
-        # self.printGraph()
 
     def resetContainers(self, containersState):
+        """Resets the containers back to the container state"""
         # containerState is a two-element csv string.  e.g. "0,3"
         self.container_a.setCurrVolume(int(containersState.split(",")[0]))
         self.container_b.setCurrVolume(int(containersState.split(",")[1]))
 
     def establishRootVertex(self):
+        """Creates the root vertwex"""
         self.graph.addVertex(self.rootNodeState)
         v = self.graph.getVertex(self.rootNodeState)
         v.setDistance(0)
         return v
 
     def getStateString(self):
+        """Returns the container settings a string"""
         return str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
 
     def addEdge(self, parent, child):
+        """Connects two nodes/vertices"""
         # by design, the parent vertex will always exist on the graph
         # if the child exists already, return None
         parentVertex = self.graph.getVertex(parent)
@@ -99,6 +103,7 @@ class assignment6:
         return None
 
     def addToQueue(self, newVertex):
+        """Adds the new vertex to the queue"""
         if newVertex is None:
             pass
         else:
@@ -122,7 +127,7 @@ class assignment6:
         print("Solution not found")
 
     def pour(self, source, destination):
-        """"""
+        """Pours from one container to another"""
         maxAmountToPour = destination.max_volume - int(destination.curr_volume)
         if source.curr_volume <= maxAmountToPour:
             destination.curr_volume = destination.curr_volume + source.curr_volume
@@ -147,15 +152,8 @@ class assignment6:
         else:
             return False
 
-    def printGraph(self):
-        verts = self.graph.getVertices()
-        print("all vertices : ", verts)
-        for vid in verts:
-            vert = self.graph.getVertex(vid)
-            pred = "N/A" if vert.getPred() is None else vert.getPred().getId()
-            print("vertex ID: ", vert.getId(), "   Parent : ", pred, "   Distance : ", vert.getDistance())
-
     def printResults(self, vertex):
+        """Reverses the order of how the list is printed.  Prints from root node to bottom child node"""
         printList = []
         currentVertex = vertex
         printList.insert(0, currentVertex.getId())
@@ -172,6 +170,7 @@ class Container:
     curr_volume = 0
 
     def __init__(self, max_volume):
+        """Constructor for Container class"""
         self.max_volume = max_volume
 
     def fill(self):
@@ -187,7 +186,7 @@ class Container:
         return self.max_volume
 
     def setCurrVolume(self, volume):
-
+        """Setting the current volume of the container to the input"""
         self.curr_volume = volume
 
     def isFull(self):
@@ -231,13 +230,9 @@ class TestHashTable(unittest.TestCase):
 def main():
     """Main Method"""
     a6 = assignment6()
-    # print(a6.findsolution(3, 4, 2))
-    # print(a6.getEligibleStates(3, 4, "4,0"))
+    print(a6.findsolution(3, 4, 2))
+    print(a6.getEligibleStates(3, 4, "4,0"))
     # a6.findsolution(3, 4, 2)
-    # a6.container_a = 3
-    # a6.container_b = 4
-    # a6.goal_amount = 2
-    print(a6.buildGraph2())
     # g = Graph()
     # g.addVertex("0,0")
     # v0 = g.getVertex("0,0")
