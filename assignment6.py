@@ -21,12 +21,20 @@ class assignment6:
         self.goal_amount = str(goal_amount)
         if goal_amount % math.gcd(a, b) == 0:
             self.buildGraph2()
-            self.printResults(self.bfSearch())
+            return self.printResults(self.bfSearch())
         else:
             print("There is no solution")
 
     def getEligibleStates(self, a, b, curr_state):
-        pass
+        self.container_a = Container(a)
+        self.container_b = Container(b)
+        self.rootNodeState = curr_state
+        self.buildGraph2()
+        stateList = []
+        for vertex in self.graph.getVertices():
+            stateList.append(vertex)
+            #print(vertex)
+        return stateList
 
     def buildGraph2(self):
         self.q.enqueue(self.establishRootVertex())
@@ -99,7 +107,6 @@ class assignment6:
         while not queue.isEmpty():
             currentVertex = queue.dequeue()
             if self.isSolutionVertex(currentVertex):
-                print("BFS Search Output: ", currentVertex)
                 return currentVertex
             else:
                 childVertices = currentVertex.getConnections()
@@ -140,8 +147,15 @@ class assignment6:
             print("vertex ID: ", vert.getId(), "   Parent : ", pred, "   Distance : ", vert.getDistance())
 
     def printResults(self, vertex):
-
-        pass
+        printList = []
+        currentVertex = vertex
+        printList.insert(0, currentVertex.getId())
+        while currentVertex.getPred() is not None:
+            currentVertex = currentVertex.getPred()
+            printList.insert(0, currentVertex.getId())
+        #for item in printList:
+         #   print(item)
+        return printList
 
 
 class Container:
@@ -178,7 +192,8 @@ class Container:
 
 if __name__ == '__main__':
     a6 = assignment6()
-    a6.findsolution(3, 4, 2)
+    print(a6.findsolution(3, 4, 2))
+    print(a6.getEligibleStates(3, 4, "3,0"))
 
     # g = Graph()
     # g.addVertex("0,0")
