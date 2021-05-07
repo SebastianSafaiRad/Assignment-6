@@ -7,6 +7,7 @@ import math
 class assignment6:
 
     def __init__(self):
+        """Constructor for this assignment"""
         self.container_a = None
         self.container_b = None
         self.goal_amount = None
