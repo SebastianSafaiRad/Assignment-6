@@ -77,14 +77,14 @@ class assignment6:
         self.container_b.setCurrVolume(int(containersState.split(",")[1]))
 
     def establishRootVertex(self):
-        """Creates the root vertwex"""
+        """Creates the root vertex"""
         self.graph.addVertex(self.rootNodeState)
         v = self.graph.getVertex(self.rootNodeState)
         v.setDistance(0)
         return v
 
     def getStateString(self):
-        """Returns the container settings a string"""
+        """Returns the container settings of a string"""
         return str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
 
     def addEdge(self, parent, child):
@@ -232,17 +232,6 @@ def main():
     a6 = assignment6()
     print(a6.findsolution(3, 4, 2))
     print(a6.getEligibleStates(3, 4, "4,0"))
-    # a6.findsolution(3, 4, 2)
-    # g = Graph()
-    # g.addVertex("0,0")
-    # v0 = g.getVertex("0,0")
-    # v0.setDistance(0)
-    # g.addEdge("0,0", "3,0")
-    # v = g.getVertex("3,0")
-    # print(v.getId())
-    # v.setDistance(1)
-    # v.setPred(v0)
-    # print(g.getVertices())
 
 
 def unittest_main():
@@ -253,13 +242,3 @@ if __name__ == '__main__':
     main()
     unittest_main()
 
-    # g = Graph()
-    # g.addVertex("0,0")
-    # v0 = g.getVertex("0,0")
-    # v0.setDistance(0)
-    # g.addEdge("0,0", "3,0")
-    # v = g.getVertex("3,0")
-    # print(v.getId())
-    # v.setDistance(1)
-    # v.setPred(v0)
-    # print(g.getVertices())
