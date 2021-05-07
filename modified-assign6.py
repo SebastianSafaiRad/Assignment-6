@@ -139,7 +139,7 @@ class assignment6:
             print("vertex ID: ", vert.getId(), "   Parent : ", pred, "   Distance : ", vert.getDistance())
 
     def printResults(self, vertex):
-        
+
         pass
 
 
