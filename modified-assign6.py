@@ -98,7 +98,7 @@ class assignment6:
         while not queue.isEmpty():
             currentVertex = queue.dequeue()
             if self.isSolutionVertex(currentVertex):
-                print("BFS Search Output: ", currentVertex.getId())
+                print("BFS Search Output: ", currentVertex)
                 return currentVertex
             else:
                 childVertices = currentVertex.getConnections()
