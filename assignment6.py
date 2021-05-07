@@ -6,88 +6,100 @@ import math
 
 class assignment6:
 
-    def __init__(self, a_volume, b_volume, goal_amount):
-        self.container_a = Container(a_volume)
-        self.container_b = Container(b_volume)
-        self.goal_amount = goal_amount
+    def __init__(self):
+        """Constructor for this assignment"""
+        self.container_a = None
+        self.container_b = None
+        self.goal_amount = None
+        self.rootNodeState = "0,0"
         self.graph = Graph()
-        self.self.vertexValueDict = {}
+        self.q = Queue()
 
     def findsolution(self, a, b, goal_amount):
+        self.container_a = Container(a)
+        self.container_b = Container(b)
+        self.goal_amount = str(goal_amount)
         if goal_amount % math.gcd(a, b) == 0:
-            self.buildGraph()
-            return self.bfSearch()
+            self.buildGraph2()
+            self.printResults(self.bfSearch())
         else:
             print("There is no solution")
 
     def getEligibleStates(self, a, b, curr_state):
         pass
 
-    def buildGraph(self):
-        q = Queue()
-        nextVertexId = 0
-        self.graph.addVertex(0)
-        self.vertexValueDict[0] = "0,0"
-        q.enqueue(self.graph.getVertex(0))
-        while not q.isEmpty():
-            currVertex = q.dequeue()
-            currVertexValue = self.vertexValueDict[currVertex.getId()]
-            idList = currVertexValue.split(",")
-            self.container_a.setCurrVolume(int(idList[0]))
-            self.container_b.setCurrVolume(int(idList[1]))
-            if currVertexValue == "3,3":
-                print("Current vertext is (3,3)")
+    def buildGraph2(self):
+        self.q.enqueue(self.establishRootVertex())
+        while self.q.size() > 0:
+            parentVertex = self.q.dequeue()
+            parentStateString = parentVertex.getId()
 
+            self.resetContainers(parentStateString)
             if not self.container_a.isFull():
                 self.container_a.fill()
-                newState = str(self.container_a.getCurrVolume()) + "," + idList[1]
-                if newState not in self.vertexValueDict.values():
-                    nextVertexId += 1
-                    self.vertexValueDict[nextVertexId] = newState
-                    self.graph.addEdge(currVertex.getId(), nextVertexId)
-                    q.enqueue(self.graph.getVertex(nextVertexId))
-                self.container_a.setCurrVolume(int(idList[0]))
+                self.addToQueue(self.addEdge(parentStateString, self.getStateString()))
+                self.resetContainers(parentStateString)
+
             if not self.container_b.isFull():
                 self.container_b.fill()
-                newState = idList[0] + "," + str(self.container_b.getCurrVolume())
-                if newState not in self.vertexValueDict.values():
-                    nextVertexId += 1
-                    self.vertexValueDict[nextVertexId] = newState
-                    self.graph.addEdge(currVertex.getId(), nextVertexId)
-                    q.enqueue(self.graph.getVertex(nextVertexId))
-                self.container_b.setCurrVolume(int(idList[1]))
+                self.addToQueue(self.addEdge(parentStateString, self.getStateString()))
+                self.resetContainers(parentStateString)
+
             if self.canPour(self.container_a, self.container_b):
                 self.pour(self.container_a, self.container_b)
-                newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
-                if newState not in self.vertexValueDict.values():
-                    nextVertexId += 1
-                    self.vertexValueDict[nextVertexId] = newState
-                    self.graph.addEdge(currVertex.getId(), nextVertexId)
-                    q.enqueue(self.graph.getVertex(nextVertexId))
-                self.container_a.setCurrVolume(int(idList[0]))
-                self.container_b.setCurrVolume(int(idList[1]))
+                self.addToQueue(self.addEdge(parentStateString, self.getStateString()))
+                self.resetContainers(parentStateString)
+
             if self.canPour(self.container_b, self.container_a):
                 self.pour(self.container_b, self.container_a)
-                newState = str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
-                if newState not in self.vertexValueDict.values():
-                    nextVertexId += 1
-                    self.vertexValueDict[nextVertexId] = newState
-                    self.graph.addEdge(currVertex.getId, nextVertexId)
-                    q.enqueue(self.graph.getVertex(nextVertexId))
-                self.container_a.setCurrVolume(int(idList[0]))
-                self.container_b.setCurrVolume(int(idList[1]))
+                self.addToQueue(self.addEdge(parentStateString, self.getStateString()))
+                self.resetContainers(parentStateString)
 
-        print("vertices are: " , self.graph.getVertices())
-        print("Key Value entries: ", self.vertedValueDict)
+        #self.printGraph()
+
+    def resetContainers(self, containersState):
+        # containerState is a two-element csv string.  e.g. "0,3"
+        self.container_a.setCurrVolume(int(containersState.split(",")[0]))
+        self.container_b.setCurrVolume(int(containersState.split(",")[1]))
+
+    def establishRootVertex(self):
+        self.graph.addVertex(self.rootNodeState)
+        v = self.graph.getVertex(self.rootNodeState)
+        v.setDistance(0)
+        return v
+
+    def getStateString(self):
+        return str(self.container_a.getCurrVolume()) + "," + str(self.container_b.getCurrVolume())
+
+    def addEdge(self, parent, child):
+        # by design, the parent vertex will always exist on the graph
+        # if the child exists already, return None
+        parentVertex = self.graph.getVertex(parent)
+        childVertex = Vertex(None)
+        if self.graph.getVertex(child) is None:
+            self.graph.addEdge(parent, child)
+            childVertex = self.graph.getVertex(child)
+            childVertex.setDistance(parentVertex.getDistance() + 1)
+            childVertex.setPred(parentVertex)
+            return childVertex
+
+        return None
+
+    def addToQueue(self, newVertex):
+        if newVertex is None:
+            pass
+        else:
+            self.q.enqueue(newVertex)
 
     def bfSearch(self):
         queue = Queue()
-        rootVertex = self.graph.getVertex(0)
+        rootVertex = self.graph.getVertex(self.rootNodeState)
         queue.enqueue(rootVertex)
 
         while not queue.isEmpty():
             currentVertex = queue.dequeue()
             if self.isSolutionVertex(currentVertex):
+                print("BFS Search Output: ", currentVertex)
                 return currentVertex
             else:
                 childVertices = currentVertex.getConnections()
@@ -114,6 +126,20 @@ class assignment6:
             return True
 
     def isSolutionVertex(self, currentVertex):
+        if self.goal_amount in currentVertex.getId():
+            return True
+        else:
+            return False
+
+    def printGraph(self):
+        verts = self.graph.getVertices()
+        print("all vertices : ", verts)
+        for vid in verts:
+            vert = self.graph.getVertex(vid)
+            pred = "N/A" if vert.getPred() is None else vert.getPred().getId()
+            print("vertex ID: ", vert.getId(), "   Parent : ", pred, "   Distance : ", vert.getDistance())
+
+    def printResults(self, vertex):
 
         pass
 
@@ -151,11 +177,16 @@ class Container:
 
 
 if __name__ == '__main__':
-    obj = assignment6(3, 4, 2)
-    print(obj.buildGraph())
-    # print(obj.graph)
-    # print(obj)
-    # print(obj.bfSearch())
-    # print(obj.findsolution(3,4,2))
-    v6 = obj.graph.getVertex(6)
-    print(v6.getDistance())
+    a6 = assignment6()
+    a6.findsolution(3, 4, 2)
+
+    # g = Graph()
+    # g.addVertex("0,0")
+    # v0 = g.getVertex("0,0")
+    # v0.setDistance(0)
+    # g.addEdge("0,0", "3,0")
+    # v = g.getVertex("3,0")
+    # print(v.getId())
+    # v.setDistance(1)
+    # v.setPred(v0)
+    # print(g.getVertices())
